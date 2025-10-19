@@ -5,7 +5,7 @@ import jpa.demo.primary.repo.NoteRepository;
 import jpa.demo.secondary.domain.NoteSecondary;
 import jpa.demo.secondary.repo.NoteSecondaryRepository;
 import jpa.demo.web.dto.CombinedSaveResponse;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -15,16 +15,25 @@ import org.springframework.transaction.support.TransactionTemplate;
 import java.util.List;
 
 @Service
-@RequiredArgsConstructor
 public class NoteService {
 
     private final NoteRepository primaryRepo;
     private final NoteSecondaryRepository secondaryRepo;
 
-    @Qualifier("primaryTransactionManager")
     private final PlatformTransactionManager primaryTm;
-    @Qualifier("secondaryTransactionManager")
     private final PlatformTransactionManager secondaryTm;
+
+    // Explicit constructor is required because Lombok does not copy @Qualifier to constructor params.
+    @Autowired
+    public NoteService(NoteRepository primaryRepo,
+                       NoteSecondaryRepository secondaryRepo,
+                       @Qualifier("primaryTransactionManager") PlatformTransactionManager primaryTm,
+                       @Qualifier("secondaryTransactionManager") PlatformTransactionManager secondaryTm) {
+        this.primaryRepo = primaryRepo;
+        this.secondaryRepo = secondaryRepo;
+        this.primaryTm = primaryTm;
+        this.secondaryTm = secondaryTm;
+    }
 
     @Transactional(transactionManager = "primaryTransactionManager")
     public Note saveToPrimary(String content) {

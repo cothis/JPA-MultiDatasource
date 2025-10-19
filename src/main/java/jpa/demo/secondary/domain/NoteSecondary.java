@@ -1,33 +1,32 @@
 package jpa.demo.secondary.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import java.time.LocalDateTime;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
-@Table(name = "note")
+@Table(name = "note_secondary")
+@Getter
+@Setter
 public class NoteSecondary {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // 원본(primary) Note의 ID를 기록하여 연관성을 남깁니다.
+    @Column(name = "primary_note_id")
+    private Long primaryNoteId;
+
     private String content;
 
-    public Long getId() {
-        return id;
-    }
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
+    @PrePersist
+    public void onCreate() {
+        if (createdAt == null) {
+            createdAt = LocalDateTime.now();
+        }
     }
 }

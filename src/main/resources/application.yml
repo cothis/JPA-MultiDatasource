@@ -1,0 +1,27 @@
+spring:
+  application:
+    name: demo
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+        format_sql: true
+  datasource:
+    primary:
+      url: jdbc:mysql://localhost:13306/demo_primary?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC&characterEncoding=utf8
+      username: root
+      password: root
+      driver-class-name: com.mysql.cj.jdbc.Driver
+    secondary:
+      url: jdbc:mysql://localhost:23306/demo_secondary?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC&characterEncoding=utf8
+      username: root
+      password: root
+      driver-class-name: com.mysql.cj.jdbc.Driver
+
+# TIP: 두 개의 MySQL 컨테이너를 띄울 때는 아래 포트 예시를 추천합니다.
+# - 13306: primary DB (database: demo_primary)
+# - 23306: secondary DB (database: demo_secondary)
+# 컨테이너가 뜬 뒤에 실제 username/password와 DB 이름을 여기에 맞춰 수정하세요.
